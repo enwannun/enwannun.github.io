@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Code</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+			
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="generic.html">TicTacToe</a></li>
+						<li><a href="elements.html"  class="active">Code</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main" class="wrapper">
+						<div class="inner">
+							<h1 class="major">Code</h1>
+
+							<!-- Text -->
+								<section>
+									<h2>Description</h2>
+									<p>This is a <b>Tic Tac Toe</b> game for the user against a simple AI that randomizes it's turns.</a>.</p>
+								
+									
+									
+									<h3>Source Code</h3>
+									<pre><code>import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+/**
+ * This is a Tic Tac Toe game made for the user to play against a simple AI randomizer.
+ *
+ * @author Ekenechukwu Nwannunu
+ * 
+ */
+
+public class TicTacToe {
+
+
+    static ArrayList<Integer> playerPositions = new ArrayList<Integer>();  // Player Positions
+    static ArrayList<Integer> cpuPositions = new ArrayList<Integer>();     // CPU Positions
+
+    public static void main(String[] args) {
+
+        char [] [] gameBoard = {{' ', '|', ' ', '|', ' '},
+                {'-', '+', '-', '+', '-'},
+                {' ', '|', ' ', '|', ' '},
+                {'-', '+', '-', '+', '-'},
+                {' ', '|', ' ', '|', ' '}};
+
+        printGameBoard(gameBoard);
+
+
+        while(true) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Please enter your placement (1-9): ");
+            int playerPos = scan.nextInt();
+
+            while(playerPositions.contains(playerPos) || cpuPositions.contains(playerPositions)) {
+                System.out.println("Positions taken!  Enter a correct position.");
+                playerPos = scan.nextInt();
+
+            }
+
+            placePiece(gameBoard, playerPos, "player");
+
+            String result = checkWinner();
+            if(result.length() > 0) {
+                System.out.println(result);
+                break;
+            }
+
+            Random rand = new Random();
+            int cpuPos = rand.nextInt(9) + 1;
+            while(playerPositions.contains(cpuPos) || cpuPositions.contains(cpuPos)) {
+
+                cpuPos = rand.nextInt(9) + 1;
+            }
+            placePiece(gameBoard, cpuPos, "cpu");
+
+            printGameBoard(gameBoard);
+            result = checkWinner();
+            if(result.length() > 0) {
+                System.out.println(result);
+                break;
+            }
+        }
+    }
+    /**
+     *
+     *  Prints the game board for the user to play against the Computer AI
+     *
+     */
+
+    public static void printGameBoard(char[][] gameBoard) {
+
+
+        for(char[] row: gameBoard) {
+            for(char c : row) {
+                System.out.print(c);
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     *
+     *  Places the piece for both users on the game board.
+     *
+     * @param gameBoard Variable for the placement of each
+     * @param pos  Variable for the Symbol for 'X' and 'O' for the user.
+     * @param user Variable that keep tracts on who has current turn.
+     */
+
+    public static void placePiece(char[][] gameBoard, int pos, String user) {
+
+        char symbol = ' ';
+        if(user.contentEquals("player")) {
+            playerPositions.add(pos);
+            symbol = 'X';
+        }
+        else if(user.equals("cpu")) {
+            cpuPositions.add(pos);
+            symbol = 'O';
+        }
+
+        switch(pos) {
+            case 1:
+                gameBoard[0][0] = symbol;
+                break;
+            case 2:
+                gameBoard[0][2] = symbol;
+                break;
+            case 3:
+                gameBoard[0][4] = symbol;
+                break;
+            case 4:
+                gameBoard[2][0] = symbol;
+                break;
+            case 5:
+                gameBoard[2][2] = symbol;
+                break;
+            case 6:
+                gameBoard[2][4] = symbol;
+                break;
+            case 7:
+                gameBoard[4][0] = symbol;
+                break;
+            case 8:
+                gameBoard[4][2] = symbol;
+                break;
+            case 9:
+                gameBoard[4][4] = symbol;
+                break;
+            default:
+                break;
+        }
+    }
+    /**
+     *
+     * Function to check when either the user won, computer won, or the game is tied.
+     *
+     */
+    public static String checkWinner() {
+
+        List topRow = Arrays.asList(1, 2, 3);
+        List midRow = Arrays.asList(4, 5, 6);
+        List botRow = Arrays.asList(7, 8, 9);
+
+
+        List leftCol = Arrays.asList(1, 4, 7);
+        List midCol = Arrays.asList(2, 5, 8);
+        List rightCol = Arrays.asList(3, 6, 9);
+
+        List cross1 = Arrays.asList(1, 5, 9);
+        List cross2 = Arrays.asList(7, 5, 3);
+
+        List<List> winning = new ArrayList<List>();
+        winning.add(topRow);
+        winning.add(midRow);
+        winning.add(botRow);
+
+        winning.add(leftCol);
+        winning.add(midCol);
+        winning.add(rightCol);
+
+        winning.add(cross1);
+        winning.add(cross2);
+
+        for(List l : winning) {
+            if(playerPositions.containsAll(l))
+            {
+                return "Congratulations you won!";
+            }
+            else if(cpuPositions.containsAll(l)) {
+                return "CPU wins! Sorry :(";
+            } else if(playerPositions.size() + cpuPositions.size() == 9) {
+                return "CAT! Game Over.";
+            }
+        }
+        return "";
+    }
+}
+</code></pre>
+								</section>
+
+							
+											<h3>Socials</h3>
+											<ul class="icons">
+												
+											
+												
+												<li><a href="https://github.com/enwannun" class="icon brands fa-github"><span class="label">Github</span></a></li>
+											</ul>
+										</div>
+									</div>
+								
+
+							
+
+						
+							
+
+					
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+					
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
